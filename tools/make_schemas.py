@@ -9,10 +9,9 @@ from pathlib import Path
 
 from sequentialist.ab import ExperimentSpec
 from sequentialist.core import json_schema
-from sequentialist.quality import PlanSpec, SchemeSpec
 
 OUT = Path(__file__).resolve().parent.parent / "schemas"
-KINDS = [ExperimentSpec, PlanSpec, SchemeSpec]
+KINDS = [ExperimentSpec]
 
 
 def main() -> int:

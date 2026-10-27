@@ -1,7 +1,7 @@
 # @sequentialist/ab-client
 
 Assignment of units to the variants of an A/B experiment, identical bit for
-bit to [sequentialist-ab](https://github.com/andre-a-no/sequentialist)
+bit to [sequentialist-ab](https://github.com/andre-a-no/sequentialist-ab)
 (Python). No dependencies; runs in browsers, workers and Node.js 16 or later.
 Licensed under the Apache License 2.0, so it can go into any front end.
 

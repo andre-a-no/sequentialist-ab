@@ -1,0 +1,104 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  # sequentialist-core 0.1.0 is not on PyPI yet: the commit it was released from
+  CORE: "sequentialist-core @ git+https://github.com/andre-a-no/sequentialist-core@27f71847ea39cedf0a8e41a5f05042428a533443#subdirectory=packages/core"
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install "$CORE" && python -m pip install -e . ruff mypy vermin==1.9.0
+      - run: ruff check .
+      - run: mypy
+      # nothing newer than the declared minimum, Python 3.8
+      - run: vermin --no-tips --violations -t=3.8- src tests examples references tools
+      - name: generated files are what the code produces
+        run: |
+          python tools/make_vectors.py --check
+          python tools/make_schemas.py --check
+      - name: the client and the vectors carry the same license
+        run: cmp vectors/LICENSE ts/ab-client/LICENSE
+
+  test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      # installed, not editable: the tests run against what users get
+      - run: python -m pip install "$CORE" && python -m pip install . pyyaml
+      - run: python -W error::ResourceWarning -m unittest discover -s tests -t . -v
+
+  oldest:
+    # Python 3.8 and no optional dependency, from the wheels (setuptools 77, needed to build, needs 3.9)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+      - run: python -m pip wheel --no-deps --wheel-dir dist "$CORE" .
+      - run: uv venv --python 3.8 /tmp/old && uv pip install --python /tmp/old/bin/python dist/*.whl
+      - run: /tmp/old/bin/python -W error::ResourceWarning -m unittest discover -s tests -t . -v
+
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build twine
+      - run: python -m build --outdir dist . && python -m twine check --strict dist/*
+      - name: the package installs next to sequentialist-core, in the shared namespace
+        run: |
+          python -m venv /tmp/env && /tmp/env/bin/pip install "$CORE" dist/*.whl
+          /tmp/env/bin/python -c "import sequentialist.core, sequentialist.ab; import sequentialist; assert getattr(sequentialist, '__file__', None) is None"
+          /tmp/env/bin/sequentialist ab --help
+
+  ab-client:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - working-directory: ts/ab-client
+        run: npm ci && npm test
+      # the built client on the oldest Node.js it supports
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "16"
+      - working-directory: ts/ab-client
+        run: node test/vectors.mjs
+
+  references:
+    # GrowthBook (gbstats) and the mSPRT of Optimizely as independent references, and the example on open data
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"  # gbstats 0.8.0 pins a pandas without wheels for newer Pythons
+      - name: the MineThatData e-mail experiment (Hillstrom 2008), checked against its SHA-256
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/hillstrom.csv" "http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv"
+          echo "0e5893329d8b93cefecc571777672028290ab69865718020c78c7284f291aece  $RUNNER_TEMP/hillstrom.csv" | sha256sum -c
+      - run: python -m pip install "$CORE" && python -m pip install . gbstats==0.8.0
+      - run: HILLSTROM="$RUNNER_TEMP/hillstrom.csv" python -m unittest references.test_references -v
+      - run: python examples/hillstrom.py --data "$RUNNER_TEMP/hillstrom.csv" --out "$RUNNER_TEMP/hillstrom"

@@ -12,7 +12,7 @@ from sequentialist.core import SpecError, load_spec, parse_spec
 
 from .helpers import make_spec
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = Path(__file__).resolve().parents[1] / "examples"
 
 

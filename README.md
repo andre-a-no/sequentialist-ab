@@ -8,9 +8,25 @@ every conclusion names its guarantee. It is meant to be embedded in a
 platform that owns the user interface, the event pipeline and the feature
 flags.
 
+Part of the [sequentialist](https://github.com/andre-a-no/sequentialist-core)
+family; built on
+[sequentialist-core](https://github.com/andre-a-no/sequentialist-core) (specs,
+the checkpointed engine, storage, audit log, reports).
+
 ```
-pip install sequentialist-ab              # Python 3.8+
+pip install sequentialist-ab              # Python 3.8+ (not on PyPI yet)
 ```
+
+Until the packages are on PyPI, install from the repositories:
+
+```
+pip install "sequentialist-core @ git+https://github.com/andre-a-no/sequentialist-core@27f71847ea39cedf0a8e41a5f05042428a533443#subdirectory=packages/core"
+pip install "sequentialist-ab @ git+https://github.com/andre-a-no/sequentialist-ab"
+```
+
+The variant assignment for browsers and Node.js is
+[`@sequentialist/ab-client`](ts/ab-client) (npm, Apache-2.0), in this
+repository.
 
 ## The spec
 
@@ -111,4 +127,12 @@ metrics and two treatments), after about 6,800 of the 64,000 customers.
 * The handler keeps one entry per unit seen (16 hex digits), written at
   every checkpoint: experiments of up to about a million units per task.
 
-License: GNU AGPL v3 or commercial; see COMMERCIAL.md.
+## Licenses
+
+GNU AGPL v3 or a commercial license ([COMMERCIAL.md](COMMERCIAL.md)).
+`ts/ab-client` and the test vectors in `vectors/` are under the Apache
+License 2.0, so that the assignment can run in any front end.
+Contributions need the [Contributor License Agreement](CLA.md); see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
+Contact: andrei@hobukob.ru, a.hobukob@gmail.com.
