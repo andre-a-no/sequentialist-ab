@@ -1,0 +1,26 @@
+# sequentialist-ab
+
+> An embeddable A/B testing engine with assignment, attribution, sequential decisions and an audit trail.
+
+## Start here
+
+- [Обзор и частые вопросы — Русский](https://github.com/andre-a-no/sequentialist-ab/blob/main/docs/overview.ru.md): Russian-language introduction, workflow and limitations.
+- [Overview and FAQ](https://github.com/andre-a-no/sequentialist-ab/blob/main/docs/overview.md): plain-language purpose, workflow, limits and source references.
+- [README](https://github.com/andre-a-no/sequentialist-ab/blob/main/README.md): current capabilities and installation.
+- [Project metadata](https://github.com/andre-a-no/sequentialist-ab/blob/main/pyproject.toml): package identity, dependencies and compatibility.
+
+## Implementation and examples
+
+- [Assignment implementation](https://github.com/andre-a-no/sequentialist-ab/blob/main/src/sequentialist/ab/assign.py): attributable implementation or example.
+- [Analysis and guarantee routing](https://github.com/andre-a-no/sequentialist-ab/blob/main/src/sequentialist/ab/analysis.py): attributable implementation or example.
+- [Experiment example](https://github.com/andre-a-no/sequentialist-ab/blob/main/examples/hillstrom.py): attributable implementation or example.
+- [Client assignment vectors](https://github.com/andre-a-no/sequentialist-ab/blob/main/vectors/assignment.json): attributable implementation or example.
+
+## Development
+
+- [Coding guidance](https://github.com/andre-a-no/sequentialist-ab/blob/main/AGENTS.md): repository map and checks.
+- [Owner guidance](https://github.com/andre-a-no/sequentialist-ab/blob/main/CLAUDE.md): preserved project rules.
+- [Contributing](https://github.com/andre-a-no/sequentialist-ab/blob/main/CONTRIBUTING.md): development and licensing.
+- [Tests](https://github.com/andre-a-no/sequentialist-ab/tree/main/tests): checked behavior.
+
+This is a curated navigation aid. It does not assert that any model or search engine automatically consumes it. Cite the linked source and retain its assumptions and release status.
