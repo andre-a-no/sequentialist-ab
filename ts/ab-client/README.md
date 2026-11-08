@@ -5,6 +5,20 @@ bit to [sequentialist-ab](https://github.com/andre-a-no/sequentialist-ab)
 (Python). No dependencies; runs in browsers, workers and Node.js 16 or later.
 Licensed under the Apache License 2.0, so it can go into any front end.
 
+## Place in the Sequentialist ecosystem
+
+This client is an application component of
+[sequentialist-ab](../../README.md). Its responsibility is reproducible variant
+assignment in a browser or Node.js; the A/B engine owns attribution, analysis,
+product decision rules and reporting.
+
+The ecosystem separates mathematical methods (`sequential-analysis` for
+inference, `sequential-search` for search and `sequential-games` for participant
+interaction), reusable engineering (`sequentialist-core`, `sequentialist-visuals`)
+and domain applications such as A/B testing. This client consumes an assignment
+configuration and returns an assignment; it does not perform a statistical test,
+select an experiment winner or inherit an error guarantee from the naming scheme.
+
 ```js
 import { assign } from "@sequentialist/ab-client";
 
